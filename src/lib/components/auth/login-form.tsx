@@ -37,22 +37,14 @@ export const LoginForm = () => {
 				},
 			});
 
-			console.log("Full login response:", data);
-			console.log("JWT tokens:", data?.Auth?.loginJwt?.loginResult?.jwtTokens);
-			console.log(
-				"Access token:",
-				data?.Auth?.loginJwt?.loginResult?.jwtTokens?.accessToken,
-			);
-
 			const accessToken =
 				data?.Auth?.loginJwt?.loginResult?.jwtTokens?.accessToken;
 
 			if (accessToken && typeof accessToken === "string") {
 				localStorage.setItem("auth_token", accessToken);
-				console.log("Stored token:", localStorage.getItem("auth_token"));
-				router.push("/home");
+				localStorage.setItem("user_email", formData.email);
+				router.replace("/home");
 			} else {
-				console.error("Invalid token format:", accessToken);
 				setError("Invalid credentials");
 			}
 		} catch (error) {

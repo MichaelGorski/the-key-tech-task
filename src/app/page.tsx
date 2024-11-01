@@ -1,14 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { testConnection } from "~/lib/graphql/healthcheck-query";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-	// useEffect(() => {
-	// 	testConnection().then((success) => {
-	// 		console.log("Connection test:", success ? "successful" : "failed");
-	// 	});
-	// }, []);
+	const router = useRouter();
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center">
@@ -24,7 +19,7 @@ export default function HomePage() {
 				 */}
 				<button
 					type="button"
-					onClick={() => console.log("test")}
+					onClick={() => router.push("/login")}
 					className="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
 				>
 					Start
