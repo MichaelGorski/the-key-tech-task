@@ -37,8 +37,19 @@ export const LoginForm = () => {
 				},
 			});
 
-			const accessToken =
-				data?.Auth?.loginJwt?.loginResult?.jwtTokens?.accessToken;
+			const accessToken = (
+				data as {
+					Auth: {
+						loginJwt: {
+							loginResult: {
+								jwtTokens: {
+									accessToken: string;
+								};
+							};
+						};
+					};
+				}
+			)?.Auth?.loginJwt?.loginResult?.jwtTokens?.accessToken;
 
 			if (accessToken && typeof accessToken === "string") {
 				localStorage.setItem("auth_token", accessToken);
@@ -56,53 +67,54 @@ export const LoginForm = () => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className="space-y-6">
-			<div className="sm:col-span-4">
+		<form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto">
+			<div>
 				<label
 					htmlFor="email"
-					className="block text-sm/6 font-medium text-gray-900"
+					className="block text-sm font-medium text-gray-700"
 				>
 					Email
 				</label>
-				<div className="mt-2">
-					<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-						<input
-							id="email"
-							name="email"
-							type="email"
-							required
-							value={formData.email}
-							onChange={handleChange}
-							className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6"
-							placeholder="you@example.com"
-						/>
-					</div>
-				</div>
+				<input
+					id="email"
+					name="email"
+					type="email"
+					required
+					value={formData.email}
+					onChange={handleChange}
+					className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                     focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                     disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none
+                     invalid:border-pink-500 invalid:text-pink-600
+                     focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+					placeholder="you@example.com"
+				/>
 			</div>
 			<div>
-				<label htmlFor="password" className="block text-sm font-medium">
+				<label
+					htmlFor="password"
+					className="block text-sm font-medium text-gray-700"
+				>
 					Password
 				</label>
-				<div className="mt-2">
-					<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-						<input
-							id="password"
-							name="password"
-							type="password"
-							required
-							value={formData.password}
-							onChange={handleChange}
-							className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6"
-							placeholder="******"
-						/>
-					</div>
-				</div>
+				<input
+					id="password"
+					name="password"
+					type="password"
+					required
+					value={formData.password}
+					onChange={handleChange}
+					className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                     focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                     disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
+					placeholder="********"
+				/>
 			</div>
-			{error && <div className="text-red-500 text-sm">{error}</div>}
+			{error && <div className="text-sm text-red-600">{error}</div>}
 			<button
 				type="submit"
 				disabled={isLoading}
-				className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+				className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				{isLoading ? "Signing in..." : "Sign in"}
 			</button>

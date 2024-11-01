@@ -2,11 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import client from "../graphql/apollo-client";
+import client from "~/lib/graphql/apollo-client";
+import { LoadingSpinner } from "../components/spinners/loading-spinnter";
 
 interface AuthContextType {
 	token: string | null;
-	login: (token: string) => void;
+	username: string | null;
+	login: (token: string, username: string) => void;
 	logout: () => void;
 	isAuthenticated: boolean;
 }
@@ -16,6 +18,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [token, setToken] = useState<string | null>(null);
 	const [username, setUsername] = useState<string | null>(null);
+	const [isInitialized, setIsInitialized] = useState<boolean>(false);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -25,13 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			setToken(storedToken);
 			setUsername(storedUsername);
 		}
-	}, []);
-
-	useEffect(() => {
-		const storedToken = localStorage.getItem("auth_token");
-		if (storedToken) {
-			setToken(storedToken);
-		}
+		setIsInitialized(true);
 	}, []);
 
 	const login = (newToken: string, newUsername: string) => {
@@ -49,6 +46,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		await client.clearStore();
 		router.replace("/login");
 	};
+
+	if (!isInitialized) {
+		return <LoadingSpinner />;
+	}
 
 	return (
 		<AuthContext.Provider

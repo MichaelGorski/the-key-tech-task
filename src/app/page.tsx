@@ -14,9 +14,6 @@ export default function HomePage() {
 				<p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl xl:px-48 dark:text-gray-400">
 					By Michael Sathya Gorski
 				</p>
-				{/* 
-					todo: add login button to route login form
-				 */}
 				<button
 					type="button"
 					onClick={() => router.push("/login")}
