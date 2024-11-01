@@ -71,31 +71,31 @@ The application will be available at `http://localhost:3000`.
 
 ---
 
-## Testing
+## ~~Testing~~
 
-### Running Tests
+### ~~Running Tests~~
 
-Execute the test suite:
-```bash
-bun test
+~~Execute the test suite:~~
+~~```bash~~
+~~bun test~~
 # or
-npm test
+~~npm test~~
 # or
-yarn test
+~~yarn test~~
 ```
 
-### Test Coverage
+### ~~Test Coverage~~
 
-Generate coverage report:
+~~Generate coverage report~~
 ```bash
-bun test
+~~bun test~~
 # or
-npm run test:coverage
+~~npm run test:coverage~~
 # or
-yarn test:coverage
+~~yarn test:coverage~~
 ```
 
-Coverage reports will be available in the `/coverage` directory.
+~~Coverage reports will be available in the `/coverage` directory.~~
 
 ---
 
