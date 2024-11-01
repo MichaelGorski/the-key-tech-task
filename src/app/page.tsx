@@ -1,6 +1,15 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect } from "react";
+import { testConnection } from "~/lib/healthcheck-query";
 
 export default function HomePage() {
+	useEffect(() => {
+		testConnection().then((success) => {
+			console.log("Connection test:", success ? "successful" : "failed");
+		});
+	}, []);
+
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center">
 			<div>
