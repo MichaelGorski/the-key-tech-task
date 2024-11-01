@@ -27,7 +27,7 @@ A production-ready Next.js application template featuring authentication, protec
 
 ### Prerequisites
 - **Node.js** 18.x or later
-- **npm** or **yarn**
+- **bun** or **npm** or **yarn**
 
 ### Installation
 
