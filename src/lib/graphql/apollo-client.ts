@@ -2,6 +2,7 @@ import {
 	ApolloClient,
 	createHttpLink,
 	from,
+	gql,
 	InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
@@ -17,26 +18,27 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 	if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const API_KEY = process.env.API_KEY;
+const httpLink = createHttpLink({
+	uri: "https://staging.api.constellation.academy/api/graphql",
+	credentials: "include",
+});
 
-const authLink = setContext(async (_, { headers }) => {
+const authLink = setContext((_, { headers }) => {
+	const token =
+		typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+	console.log("Using token:", JSON.stringify(token, null, Infinity)); // Debug log
+
 	return {
 		headers: {
 			...headers,
-			// authorization: token ? `Bearer ${token}` : "",
+			authorization: token ? `Bearer ${token}` : "",
 		},
 	};
 });
 
-const apiLink = createHttpLink({
-	uri: API_KEY,
-	credentials: "include",
-});
-
 const client = new ApolloClient({
-	link: authLink.concat(from([errorLink, apiLink])),
+	link: from([errorLink, authLink, httpLink]),
 	cache: new InMemoryCache(),
-	connectToDevTools: true,
 	defaultOptions: {
 		watchQuery: {
 			fetchPolicy: "network-only",
@@ -46,5 +48,68 @@ const client = new ApolloClient({
 		},
 	},
 });
+
+// const SCHEMA_QUERY = gql`
+//   query SchemaTypes {
+//     __type(name: "JwtLoginInformation") {
+//       name
+//       fields {
+//         name
+//         type {
+//           name
+//           kind
+//         }
+//       }
+//     }
+//     __type(name: "LoginResultExtension") {
+//       name
+//       fields {
+//         name
+//         type {
+//           name
+//           kind
+//         }
+//       }
+//     }
+//   }
+// `;
+
+// client
+// 	.query({
+// 		query: SCHEMA_QUERY,
+// 	})
+// 	.then((result) => {
+// 		console.log("JwtLoginInformation fields:", result.data.__type);
+// 	})
+// 	.catch((error) => {
+// 		console.error("Schema error:", error);
+// 	});
+
+const SCHEMA_QUERY = gql`
+  query SchemaTypes {
+    __type(name: "TreeNodesConnection") {
+      name
+      fields {
+        name
+        type {
+          name
+          kind
+        }
+      }
+    }
+  }
+`;
+
+// Add to your Apollo client file
+client
+	.query({
+		query: SCHEMA_QUERY,
+	})
+	.then((result) => {
+		console.log("TreeNodesConnection fields:", result.data.__type.fields);
+	})
+	.catch((error) => {
+		console.error("Schema error:", error);
+	});
 
 export default client;

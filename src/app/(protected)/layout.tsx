@@ -1,30 +1,26 @@
-import { redirect } from "next/navigation";
-import { auth } from "~/server/auth";
+"use client";
 
-export default async function ProtectedLayout({
+import { useAuth } from "~/lib/context/auth-context";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+export default function ProtectedLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
-	try {
-		const session = await auth();
-		console.log("🚀 ~ session:", session);
+	const { isAuthenticated } = useAuth();
+	const router = useRouter();
 
-		if (!session) {
-			redirect("/login");
+	useEffect(() => {
+		if (!isAuthenticated) {
+			router.push("/login");
 		}
-	} catch (error) {
-		console.error("Error in DashboardLayout:", error);
+	}, [isAuthenticated, router]);
+
+	if (!isAuthenticated) {
+		return null;
 	}
 
-	return (
-		<div>
-			<header className="border-b">
-				<div className="container flex h-16 items-center px-4">
-					<div className="flex-1">you are in</div>
-				</div>
-			</header>
-			<main className="container p-4">{children}</main>
-		</div>
-	);
+	return <>{children}</>;
 }

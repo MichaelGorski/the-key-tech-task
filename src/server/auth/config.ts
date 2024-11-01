@@ -48,14 +48,13 @@ export const authConfig = {
 					type: "text",
 				},
 				password: {
-					label: "passord",
+					label: "password",
 					type: "password",
 				},
 			},
 			async authorize(credentials) {
 				if (!credentials?.username || !credentials?.password) {
-					console.log("Missing credentials");
-					return null;
+					throw new Error("Missing credentials");
 				}
 
 				try {
@@ -69,28 +68,28 @@ export const authConfig = {
 
 					console.log("Login response:", data); // Debug log
 
-					if (data?.loginJwt?.token) {
-						// Return the user object
-						return {
-							id: data.loginJwt.user.username,
-							name: data.loginJwt.user.username,
-							email: data.loginJwt.user.username, // Optional
-							token: data.loginJwt.token,
-						};
+					if (!data?.loginJwt?.token) {
+						throw new Error("Invalid credentials - No token received");
 					}
 
-					console.log("No token in response");
-					return null;
+					return {
+						id: data.loginJwt.user.username,
+						name: data.loginJwt.user.username,
+						email: data.loginJwt.user.username,
+						token: data.loginJwt.token,
+					};
 				} catch (error) {
 					console.error("Authorization error:", error);
-					return null;
+					// Throw a more specific error message
+					throw new Error(
+						error instanceof Error ? error.message : "Authentication failed",
+					);
 				}
 			},
 		}),
 	],
 	callbacks: {
 		async session({ session, token }) {
-			// Send properties to the client
 			if (token) {
 				session.accessToken = token.accessToken;
 				session.user.id = token.id as string;
@@ -116,4 +115,15 @@ export const authConfig = {
 	},
 	secret: process.env.AUTH_SECRET,
 	debug: process.env.NODE_ENV === "development",
+	logger: {
+		error: (code, metadata) => {
+			console.error(code, metadata);
+		},
+		warn: (code) => {
+			console.warn(code);
+		},
+		debug: (code, metadata) => {
+			console.log(code, metadata);
+		},
+	},
 } satisfies NextAuthConfig;

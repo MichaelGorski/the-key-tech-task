@@ -1,20 +1,21 @@
-// middleware.ts
 import { NextResponse } from "next/server";
-import { auth } from "..";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
-	const isLoggedIn = !!req.auth;
-	const isAuthPage = req.nextUrl.pathname.startsWith("/login");
+export function middleware(request: NextRequest) {
+	const token = request.cookies.get("auth_token");
+	const isAuthPage = request.nextUrl.pathname === "/login";
 
-	if (isAuthPage) {
-		if (isLoggedIn) {
-			return NextResponse.redirect(new URL("/dashboard", req.url));
-		}
-		return null;
+	if (!token && !isAuthPage) {
+		return NextResponse.redirect(new URL("/login", request.url));
 	}
 
-	if (!isLoggedIn) {
-		return NextResponse.redirect(new URL("/login", req.url));
+	if (token && isAuthPage) {
+		return NextResponse.redirect(new URL("/home", request.url));
 	}
-	return null;
-});
+
+	return NextResponse.next();
+}
+
+export const config = {
+	matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};

@@ -5,7 +5,7 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { ApolloProvider } from "@apollo/client";
 import client from "~/lib/graphql/apollo-client";
-import { NextAuthProvider } from "~/lib/components/providers/session-provider";
+import { AuthProvider } from "~/lib/context/auth-context";
 
 export default function RootLayout({
 	children,
@@ -13,9 +13,9 @@ export default function RootLayout({
 	return (
 		<html lang="en" className={`${GeistSans.variable}`}>
 			<body>
-				<NextAuthProvider>
+				<AuthProvider>
 					<ApolloProvider client={client}>{children}</ApolloProvider>
-				</NextAuthProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);
