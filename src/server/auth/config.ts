@@ -1,5 +1,7 @@
-import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import type { DefaultSession, NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import client from "~/lib/graphql/apollo-client";
+import { LOGIN_MUTATION } from "~/lib/graphql/mutations/auth/login";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -9,17 +11,26 @@ import CredentialsProvider from "next-auth/providers/credentials";
  */
 declare module "next-auth" {
 	interface Session extends DefaultSession {
+		accessToken?: string;
 		user: {
 			id: string;
-			// ...other properties
-			// role: UserRole;
+			name: string;
 		} & DefaultSession["user"];
 	}
 
-	// interface User {
-	//   // ...other properties
-	//   // role: UserRole;
-	// }
+	interface User {
+		id: string;
+		name: string;
+		token?: string;
+	}
+}
+
+declare module "@auth/core/jwt" {
+	interface JWT {
+		accessToken?: string;
+		id?: string;
+		name?: string;
+	}
 }
 
 /**
@@ -41,22 +52,68 @@ export const authConfig = {
 					type: "password",
 				},
 			},
-			authorize: async (credentials) => {
-				// todo: add login logic
-				return true;
+			async authorize(credentials) {
+				if (!credentials?.username || !credentials?.password) {
+					console.log("Missing credentials");
+					return null;
+				}
+
+				try {
+					const { data } = await client.mutate({
+						mutation: LOGIN_MUTATION,
+						variables: {
+							username: credentials.username,
+							password: credentials.password,
+						},
+					});
+
+					console.log("Login response:", data); // Debug log
+
+					if (data?.loginJwt?.token) {
+						// Return the user object
+						return {
+							id: data.loginJwt.user.username,
+							name: data.loginJwt.user.username,
+							email: data.loginJwt.user.username, // Optional
+							token: data.loginJwt.token,
+						};
+					}
+
+					console.log("No token in response");
+					return null;
+				} catch (error) {
+					console.error("Authorization error:", error);
+					return null;
+				}
 			},
 		}),
 	],
 	callbacks: {
-		session: ({ session, token }) => ({
-			...session,
-			user: {
-				...session.user,
-				id: token.sub,
-			},
-		}),
+		async session({ session, token }) {
+			// Send properties to the client
+			if (token) {
+				session.accessToken = token.accessToken;
+				session.user.id = token.id as string;
+				session.user.name = token.name as string;
+			}
+			return session;
+		},
+		async jwt({ token, user }) {
+			if (user) {
+				token.accessToken = user.token;
+				token.id = user.id;
+				token.name = user.name;
+			}
+			return token;
+		},
 	},
 	pages: {
 		signIn: "/login",
 	},
+	session: {
+		strategy: "jwt",
+		maxAge: 24 * 60 * 60,
+	},
+	secret: process.env.AUTH_SECRET,
+	debug: process.env.NODE_ENV === "development",
 } satisfies NextAuthConfig;
