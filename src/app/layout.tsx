@@ -4,7 +4,7 @@ import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { ApolloProvider } from "@apollo/client";
-import client from "~/lib/apollo-client";
+import client from "~/lib/graphql/apollo-client";
 
 export default function RootLayout({
 	children,

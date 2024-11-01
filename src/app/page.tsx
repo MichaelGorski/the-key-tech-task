@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { testConnection } from "~/lib/healthcheck-query";
+import { testConnection } from "~/lib/graphql/healthcheck-query";
 
 export default function HomePage() {
 	useEffect(() => {
