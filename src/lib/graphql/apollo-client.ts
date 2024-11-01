@@ -2,7 +2,6 @@ import {
 	ApolloClient,
 	createHttpLink,
 	from,
-	gql,
 	InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
@@ -26,7 +25,6 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
 	const token =
 		typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
-	console.log("Using token:", JSON.stringify(token, null, Infinity)); // Debug log
 
 	return {
 		headers: {
@@ -48,68 +46,5 @@ const client = new ApolloClient({
 		},
 	},
 });
-
-// const SCHEMA_QUERY = gql`
-//   query SchemaTypes {
-//     __type(name: "JwtLoginInformation") {
-//       name
-//       fields {
-//         name
-//         type {
-//           name
-//           kind
-//         }
-//       }
-//     }
-//     __type(name: "LoginResultExtension") {
-//       name
-//       fields {
-//         name
-//         type {
-//           name
-//           kind
-//         }
-//       }
-//     }
-//   }
-// `;
-
-// client
-// 	.query({
-// 		query: SCHEMA_QUERY,
-// 	})
-// 	.then((result) => {
-// 		console.log("JwtLoginInformation fields:", result.data.__type);
-// 	})
-// 	.catch((error) => {
-// 		console.error("Schema error:", error);
-// 	});
-
-const SCHEMA_QUERY = gql`
-  query SchemaTypes {
-    __type(name: "TreeNodesConnection") {
-      name
-      fields {
-        name
-        type {
-          name
-          kind
-        }
-      }
-    }
-  }
-`;
-
-// Add to your Apollo client file
-client
-	.query({
-		query: SCHEMA_QUERY,
-	})
-	.then((result) => {
-		console.log("TreeNodesConnection fields:", result.data.__type.fields);
-	})
-	.catch((error) => {
-		console.error("Schema error:", error);
-	});
 
 export default client;

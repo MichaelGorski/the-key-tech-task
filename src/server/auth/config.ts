@@ -14,13 +14,11 @@ declare module "next-auth" {
 		accessToken?: string;
 		user: {
 			id: string;
-			name: string;
 		} & DefaultSession["user"];
 	}
 
 	interface User {
-		id: string;
-		name: string;
+		id?: string;
 		token?: string;
 	}
 }
@@ -66,21 +64,32 @@ export const authConfig = {
 						},
 					});
 
-					console.log("Login response:", data); // Debug log
+					type LoginResponse = {
+						data?: {
+							loginJwt?: {
+								token: string;
+							};
+						};
+					};
 
-					if (!data?.loginJwt?.token) {
+					if (!(data as LoginResponse)?.data?.loginJwt?.token) {
 						throw new Error("Invalid credentials - No token received");
 					}
 
+					const loginData = (
+						(data as LoginResponse).data as {
+							loginJwt: { user: { username: string }; token: string };
+						}
+					).loginJwt;
+
 					return {
-						id: data.loginJwt.user.username,
-						name: data.loginJwt.user.username,
-						email: data.loginJwt.user.username,
-						token: data.loginJwt.token,
+						id: loginData.user.username,
+						name: loginData.user.username,
+						email: loginData.user.username,
+						token: loginData.token,
 					};
 				} catch (error) {
 					console.error("Authorization error:", error);
-					// Throw a more specific error message
 					throw new Error(
 						error instanceof Error ? error.message : "Authentication failed",
 					);
@@ -92,8 +101,8 @@ export const authConfig = {
 		async session({ session, token }) {
 			if (token) {
 				session.accessToken = token.accessToken;
-				session.user.id = token.id as string;
-				session.user.name = token.name as string;
+				session.user.id = token.id ?? "";
+				session.user.name = token.name ?? "";
 			}
 			return session;
 		},
@@ -101,7 +110,7 @@ export const authConfig = {
 			if (user) {
 				token.accessToken = user.token;
 				token.id = user.id;
-				token.name = user.name;
+				token.name = user.name ?? undefined;
 			}
 			return token;
 		},
@@ -116,8 +125,8 @@ export const authConfig = {
 	secret: process.env.AUTH_SECRET,
 	debug: process.env.NODE_ENV === "development",
 	logger: {
-		error: (code, metadata) => {
-			console.error(code, metadata);
+		error: (error: Error) => {
+			console.error(error);
 		},
 		warn: (code) => {
 			console.warn(code);

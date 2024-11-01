@@ -1,29 +1,117 @@
-# Create T3 App
+# Task for The Key Tech in Next.js 
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A production-ready Next.js application template featuring authentication, protected routes, and optimized performance.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+### Authentication
+- Context-based auth management
+- Persistent sessions via `localStorage`
+- Protected route guards
+- Token-based authentication
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+### Performance Optimizations
+- Lazy loading components
+- Virtualized lists with drag-and-drop
+- Code splitting and dynamic imports
+- Optimized bundle size
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### Developer Experience
+- TypeScript support
+- Comprehensive test suite
+- Modern React patterns
+- Code quality tools
 
-## Learn More
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Getting Started
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Prerequisites
+- **Node.js** 18.x or later
+- **npm** or **yarn**
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Installation
 
-## How do I deploy this?
+Clone the repository:
+```bash
+git clone https://github.com/MichaelGorski/the-key-tech-task.git
+or
+git clone git@github.com:MichaelGorski/the-key-tech-task.git
+```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+Install dependencies:
+```bash
+bun install
+# or
+npm install
+# or
+yarn install
+```
+
+Set up environment variables:
+```bash
+cp .env.example .env.local
+```
+Edit `.env.local` with your configuration.
+
+---
+
+## Development
+
+Start the development server:
+
+```bash
+bun dev
+# or
+npm run dev
+# or
+yarn dev
+```
+
+The application will be available at `http://localhost:3000`.
+
+---
+
+## Testing
+
+### Running Tests
+
+Execute the test suite:
+```bash
+bun test
+# or
+npm test
+# or
+yarn test
+```
+
+### Test Coverage
+
+Generate coverage report:
+```bash
+bun test
+# or
+npm run test:coverage
+# or
+yarn test:coverage
+```
+
+Coverage reports will be available in the `/coverage` directory.
+
+---
+
+## Project Structure
+```bash
+├── app/               # Next.js pages and API routes
+├── app/(auth)         # Login
+├── app/(protected)    # Home Page
+├── api/auth           # Api Routes
+├── lib/components/    # Reusable UI components 
+├── context/           # React contexts including auth
+├── graphql/           # GraphQL 
+├── graphql/mutations  # GraphQL Mutations 
+├── graphql/queries    # GraphQL Queries
+└── utils/             # Helper functions and utilities
+└── server/auth        # Next.js related middleware, config
+```
+
+---
