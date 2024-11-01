@@ -9,7 +9,7 @@ interface AuthContextType {
 	token: string | null;
 	username: string | null;
 	login: (token: string, username: string) => void;
-	logout: () => void;
+	logout: () => Promise<void>;
 	isAuthenticated: boolean;
 }
 

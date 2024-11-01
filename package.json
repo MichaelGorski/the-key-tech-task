@@ -13,7 +13,8 @@
 		"start": "next start",
 		"typecheck": "tsc --noEmit",
 		"format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
-		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
+		"test": "bun test"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.11.8",
@@ -36,6 +37,7 @@
 		"zod": "^3.23.3"
 	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "^6.6.3",
 		"@types/eslint": "^8.56.10",
 		"@types/node": "^22.8.6",
 		"@types/react": "^18.3.3",
@@ -43,6 +45,7 @@
 		"@types/testing-library__react": "^10.2.0",
 		"@typescript-eslint/eslint-plugin": "^8.1.0",
 		"@typescript-eslint/parser": "^8.1.0",
+		"bun-types": "^1.1.33",
 		"eslint": "^8.57.0",
 		"eslint-config-next": "^15.0.1",
 		"postcss": "^8.4.39",

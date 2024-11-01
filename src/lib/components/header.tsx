@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import client from "../graphql/apollo-client";
 
-export const Header = () => {
+export const Header: React.FC = () => {
 	const [email, setEmail] = useState<string | null>(null);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const router = useRouter();

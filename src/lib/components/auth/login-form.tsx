@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LOGIN_MUTATION } from "~/lib/graphql/mutations/auth/login";
 
-export const LoginForm = () => {
+export const LoginForm: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const [error, setError] = useState<string | null>(null);
